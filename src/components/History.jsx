@@ -53,7 +53,7 @@ export default function History({
             </h3>
           </div>
         </div>
-        <div>
+        <div className="flex gap-1">
           <div className="relative inline-block text-left">
             <SortComp filter={filter} type={type} />
           </div>

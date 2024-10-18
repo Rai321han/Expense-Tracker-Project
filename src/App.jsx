@@ -27,7 +27,9 @@ function App() {
 
   // On chaning form input
   function handleChange(e) {
-    const { name, value } = e.target;
+    let { name, value } = e.target;
+
+    if (name === "amount") value = parseFloat(value);
 
     setFormData((prev) => ({
       ...prev,

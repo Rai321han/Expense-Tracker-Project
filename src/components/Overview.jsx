@@ -1,9 +1,12 @@
 /* eslint-disable react/prop-types */
 export default function Overview({ expense, income }) {
-  const totalIncome = income.reduce((acc, cur) => Number(cur.amount) + acc, 0);
+  const totalIncome = income.reduce(
+    (acc, cur) => parseFloat(cur.amount) + acc,
+    0
+  );
 
   const totalExpense = expense.reduce(
-    (acc, cur) => Number(cur.amount) + acc,
+    (acc, cur) => parseFloat(cur.amount) + acc,
     0
   );
 
