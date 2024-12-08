@@ -1,10 +1,27 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { incomeCategories, expenseCategories } from "../utils/data";
 import { FilterSVG } from "../utils/SVGs";
 
 export default function FilterComp({ type, onFilterChange }) {
   const [isOpen, setIsOpen] = useState(false);
+  const filterRef = useRef(null);
+  const filterBtn = useRef(null);
+
+  useEffect(() => {
+    isOpen && filterRef.current.focus();
+  }, [isOpen]);
+
+  function handleToggle() {
+    setIsOpen((prev) => !prev);
+  }
+
+  function handleBlur(event) {
+    // Close dropdown only if focus moves outside the dropdown and button
+    if (!filterRef.current?.contains(event.relatedTarget)) {
+      setIsOpen(false);
+    }
+  }
 
   let options;
 
@@ -14,7 +31,8 @@ export default function FilterComp({ type, onFilterChange }) {
   const renderOptions = options.map((option) => (
     <label
       key={option}
-      className="inline-flex items-center px-4 py-2 text-sm text-gray-700"
+      // onMouseDown={(e) => e.preventDefault()}
+      className="cursor-pointer inline-flex items-center px-4 py-2 gap-2 text-sm text-gray-700"
     >
       <input
         type="checkbox"
@@ -25,20 +43,23 @@ export default function FilterComp({ type, onFilterChange }) {
           onFilterChange(e.target.value, type);
         }}
       />
-      <span className="ml-2">{option}</span>
+      <div className="ml-2">{option}</div>
     </label>
   ));
 
   return (
     <>
-      <div>
+      <div
+        ref={filterBtn}
+        onClick={handleToggle}
+        onMouseDown={(e) => e.preventDefault()}
+      >
         <button
           type="button"
           className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-2 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
           id="filter-button"
           aria-expanded={isOpen}
           aria-haspopup="true"
-          onClick={() => setIsOpen((prevIsOpen) => !prevIsOpen)}
         >
           <FilterSVG />
         </button>
@@ -49,12 +70,19 @@ export default function FilterComp({ type, onFilterChange }) {
           ${!isOpen && "hidden"}
           `}
         role="menu"
+        ref={filterRef}
+        // onBlur={() => setIsOpen(false)}
+        onBlur={handleBlur}
         aria-orientation="vertical"
         aria-labelledby="filter-button"
         tabIndex="-1"
         id="filter-dropdown"
       >
-        <div className="py-1" role="none">
+        <div
+          className="py-1"
+          role="none"
+          // onMouseDown={(e) => e.stopPropagation()}
+        >
           {renderOptions}
         </div>
       </div>

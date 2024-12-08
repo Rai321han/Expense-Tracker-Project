@@ -1,16 +1,10 @@
 /* eslint-disable react/prop-types */
+import calculateOverview from "../utils/calculateOverview";
 export default function Overview({ expense, income }) {
-  const totalIncome = income.reduce(
-    (acc, cur) => parseFloat(cur.amount) + acc,
-    0
+  const { totalExpense, totalIncome, balance } = calculateOverview(
+    expense,
+    income
   );
-
-  const totalExpense = expense.reduce(
-    (acc, cur) => parseFloat(cur.amount) + acc,
-    0
-  );
-
-  const balance = totalIncome - totalExpense;
 
   return (
     <div className="bg-white">

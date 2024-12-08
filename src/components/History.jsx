@@ -1,5 +1,6 @@
+/* eslint-disable no-unused-vars */
 import { ExpenseSVG, IncomeSVG } from "../utils/SVGs";
-import FilterComp from "./FilterComp";
+// import FilterComp from "./FilterComp";
 import HistoryListItem from "./HistoryListItem";
 import SortComp from "./SortComp";
 
@@ -8,32 +9,33 @@ export default function History({
   income,
   expense,
   data,
-  onEdit,
+  onPopulateForm,
   onDelete,
   resetForm,
-  filter,
-  filters,
-  onFilterChange,
+  onSort,
+  // filter,
+  // filters,
+  // onFilterChange,
 }) {
   let type;
   if (income) type = "Income";
   else if (expense) type = "Expense";
 
-  let updatedData;
-  if (expense) {
-    updatedData = filterData(data, filters.expenseFilter);
-  } else updatedData = filterData(data, filters.incomeFilter);
+  let updatedData = data;
+  // if (expense) {
+  //   updatedData = filterData(data, filters.expenseFilter);
+  // } else updatedData = filterData(data, filters.incomeFilter);
 
-  function filterData(transData, filters) {
-    if (!filters.length) return transData;
-    let updatedData = [];
-    for (const data of transData) {
-      for (const filter of filters) {
-        if (data.category === filter) updatedData.push(data);
-      }
-    }
-    return updatedData;
-  }
+  // function filterData(transData, filters) {
+  //   if (!filters.length) return transData;
+  //   let updatedData = [];
+  //   for (const data of transData) {
+  //     for (const filter of filters) {
+  //       if (data.category === filter) updatedData.push(data);
+  //     }
+  //   }
+  //   return updatedData;
+  // }
 
   return (
     <div className="border rounded-md relative">
@@ -55,11 +57,11 @@ export default function History({
         </div>
         <div className="flex gap-1">
           <div className="relative inline-block text-left">
-            <SortComp filter={filter} type={type} />
+            <SortComp onSort={onSort} />
           </div>
 
           <div className="relative inline-block text-left">
-            <FilterComp type={type} onFilterChange={onFilterChange} />
+            {/* <FilterComp type={type} onFilterChange={onFilterChange} /> */}
           </div>
         </div>
       </div>
@@ -69,7 +71,7 @@ export default function History({
           <HistoryListItem
             data={item}
             key={item.id}
-            onEdit={onEdit}
+            onPopulateForm={onPopulateForm}
             resetForm={resetForm}
             onDelete={onDelete}
           />

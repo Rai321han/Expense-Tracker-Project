@@ -6,12 +6,13 @@ export default function ExpenseForm({
   onChange,
   onAddSubmit,
   formData,
-
   onEdit,
 }) {
   const [tab, setTab] = useState("Expense");
   let renderOptions = [];
   const updatedTab = formData.type || tab;
+
+  // console.log(formData);
 
   if (updatedTab === "Expense") {
     renderOptions = expenseCategories.map((option) => (
@@ -30,7 +31,7 @@ export default function ExpenseForm({
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        if (formData.id) onEdit(formData);
+        if (formData.id) onEdit(formData, updatedTab);
         else onAddSubmit(formData, tab);
       }}
     >
@@ -89,7 +90,7 @@ export default function ExpenseForm({
             value={formData.amount}
             onChange={(e) => onChange(e)}
             autoComplete="off"
-            placeholder="12931"
+            placeholder="Ex: 10000"
             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-teal-600 sm:text-sm sm:leading-6"
           />
         </div>
@@ -108,6 +109,7 @@ export default function ExpenseForm({
             name="date"
             id="date"
             value={formData.date}
+            required
             onChange={(e) => onChange(e)}
             autoComplete="off"
             placeholder="12931"
