@@ -1,6 +1,10 @@
 /* eslint-disable react/prop-types */
 // import calculateOverview from "../utils/calculateOverview";
 export default function Overview({ overviewData }) {
+  // console.log(overviewData);
+  if (!Array.isArray(overviewData) || overviewData.length !== 2) {
+    overviewData = [0, 0]; // Default values when not logged in
+  }
   const [totalExpenseAmount, totalIncomeAmount] = overviewData;
   const balance = totalIncomeAmount - totalExpenseAmount;
 

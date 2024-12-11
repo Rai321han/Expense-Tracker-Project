@@ -88,12 +88,24 @@ export async function getIncomes(
   }
 }
 
-export async function getOverViewData() {
+export async function getOverViewData(email) {
+  if (!email) {
+    toast.error("User not found!");
+    return;
+  }
   const coll = collection(db, "expenseTracker");
 
   // Queries for expense and income
-  const expenseQuery = query(coll, where("type", "==", "Expense"));
-  const incomeQuery = query(coll, where("type", "==", "Income"));
+  const expenseQuery = query(
+    coll,
+    where("email", "==", email),
+    where("type", "==", "Expense")
+  );
+  const incomeQuery = query(
+    coll,
+    where("email", "==", email),
+    where("type", "==", "Income")
+  );
 
   try {
     // Fetch aggregated data for expenses

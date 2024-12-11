@@ -75,14 +75,20 @@ function App() {
       : []
   );
 
-  const overviewData = useQuery(
-    user
-      ? {
-          queryKey: ["overview"],
-          queryFn: () => getOverViewData(),
-        }
-      : [0, 0]
-  );
+  // const overviewData = useQuery(
+  //   user
+  //     ? {
+  //         queryKey: ["overview", user],
+  //         queryFn: () => getOverViewData(user.email),
+  //       }
+  //     : [0, 0]
+  // );
+
+  const overviewData = useQuery({
+    queryKey: ["overview", user?.email],
+    queryFn: user ? () => getOverViewData(user.email) : async () => [0, 0], // Return a resolved promise with default data
+    enabled: !!user, // Only fetch data when the user is logged in
+  });
 
   const login = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
@@ -164,16 +170,6 @@ function App() {
       type: "",
     });
   }
-  // if (expenseQuery && (expenseQuery.isLoading || incomeQuery.isLoading))
-  //   return (
-  //     <div className="w-screen h-screen flex justify-center items-center">
-  //       <ImSpinner9 className="animate-spin w-20 h-20 fill-teal-500 " />
-  //     </div>
-  //   );
-  // if (expenseQuery && (expenseQuery.error || incomeQuery.error))
-  //   return (
-  //     <p>Error: {expenseQuery.error?.message || incomeQuery.error?.message}</p>
-  //   );
 
   return (
     <>
@@ -199,7 +195,7 @@ function App() {
             {overviewData.isLoading ? (
               <Overview overviewData={[0, 0]} />
             ) : (
-              <Overview overviewData={overviewData.data} />
+              <Overview overviewData={overviewData && overviewData.data} />
             )}
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mt-2">
