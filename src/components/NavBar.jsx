@@ -7,21 +7,20 @@ export default function NavBar() {
   const { user } = useUser();
   return (
     <nav>
-      <div className="flex max-w-7xl items-center bg-[#F9FAFB] w-full justify-between py-1  border px-4 rounded-md mx-auto">
+      <div className="grid grid-cols-[repeat(3,1fr)] grid-rows-1 max-w-7xl items-center bg-[#F9FAFB] w-full justify-between py-1  border px-4 rounded-md mx-auto">
         <div>
           <img src="/assets/image/logo_expense_tracker.png" className="h-12" />
         </div>
 
         <div className="hidden md:block">
-          <ul className="flex gap-4 text-gray-500 font-medium">
-            <li>Home</li>
-            <li>App</li>
-            <li>Account</li>
+          <ul className="flex gap-4 text-gray-500 font-medium justify-center">
             <li>Export</li>
+            <li>History</li>
           </ul>
         </div>
 
-        <div className=" flex flex-row gap-2">
+        <div className=" flex flex-row gap-2 justify-end">
+          <div className="p-2 text-zinc-500">December 2024</div>
           {user ? <LogOut /> : <SignIn />}
           {user && (
             <div className="rounded-full  bg-teal-600 text-white w-10">

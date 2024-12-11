@@ -13,6 +13,9 @@ export default function useAddIncomeData() {
       queryClient.invalidateQueries({
         queryKey: ["incomes"],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["overview"],
+      });
     },
     onError: () => {
       toast.error("Error saving data!");

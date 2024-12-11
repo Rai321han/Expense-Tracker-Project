@@ -10,11 +10,13 @@ export default function useDelete() {
       const { type } = variable;
       if (type === "Expense") {
         queryClient.invalidateQueries(["expenses"]);
+
         toast.success("Expense data Deleted!");
       } else {
         queryClient.invalidateQueries(["incomes"]);
         toast.success("Income data Deleted!");
       }
+      queryClient.invalidateQueries(["overview"]);
     },
     onError: () => {
       toast.error("An error occured while deleting data!");

@@ -4,7 +4,7 @@ import ExpenseForm from "./components/ExpenseForm";
 import History from "./components/History";
 import Overview from "./components/Overview";
 import { useQueries, useQuery } from "react-query";
-import { getExpenses, getIncomes } from "./service/getData";
+import { getExpenses, getIncomes, getOverViewData } from "./service/getData";
 import useAddExpenseData from "./hooks/useAddExpenseData";
 import useAddIncomeData from "./hooks/useAddIncomeData";
 import toast, { Toaster } from "react-hot-toast";
@@ -52,7 +52,7 @@ function App() {
     user
       ? [
           {
-            queryKey: ["expenses", expenseSort, user, categories],
+            queryKey: ["expenses", expenseSort, user, categories.expense],
             queryFn: () =>
               getExpenses(
                 expenseSort.sortType,
@@ -62,7 +62,7 @@ function App() {
               ),
           },
           {
-            queryKey: ["incomes", incomeSort, user, categories],
+            queryKey: ["incomes", incomeSort, user, categories.income],
             queryFn: () =>
               getIncomes(
                 incomeSort.sortType,
@@ -73,6 +73,15 @@ function App() {
           },
         ]
       : []
+  );
+
+  const overviewData = useQuery(
+    user
+      ? {
+          queryKey: ["overview"],
+          queryFn: () => getOverViewData(),
+        }
+      : [0, 0]
   );
 
   const login = useGoogleLogin({
@@ -171,7 +180,7 @@ function App() {
       <Toaster />
       <GoogleSignIn open={openDiaglog} setOpen={setOpenDialog} login={login} />
       <NavBar />
-      <main className="relative mx-auto my-10 w-full max-w-7xl">
+      <main className="relative mx-auto my-5 w-full max-w-7xl">
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <div className="p-6 py-8 bg-[#F9FAFB] border rounded-md">
             <h2 className="text-3xl font-semibold leading-7 text-gray-800 text-center">
@@ -187,9 +196,13 @@ function App() {
           </div>
 
           <div className="lg:col-span-2">
-            <Overview income={incomeData} expense={expenseData} />
+            {overviewData.isLoading ? (
+              <Overview overviewData={[0, 0]} />
+            ) : (
+              <Overview overviewData={overviewData.data} />
+            )}
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mt-2">
               <History
                 isLoading={incomeQuery.isLoading}
                 income

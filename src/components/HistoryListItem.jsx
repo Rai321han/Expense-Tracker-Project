@@ -17,10 +17,10 @@ export default function HistoryListItem({
     <div
       className={`${
         !isEdit ? "text-gray-600" : "text-black"
-      } flex justify-between items-center py-2 relative group cursor-pointer`}
+      } flex justify-between items-center py-1 relative group cursor-pointer`}
     >
       <div>
-        <h3 className="text-base font-medium leading-7 ">{category}</h3>
+        <h3 className="text-sm leading-6 font-medium  ">{category}</h3>
         <p className="text-xs ">
           {date === "" ? "No date provided" : formatDate(date)}
         </p>

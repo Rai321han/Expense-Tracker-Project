@@ -22,7 +22,7 @@ export default function History({
   else if (expense) type = "Expense";
 
   return (
-    <div className="border rounded-md relative">
+    <div className="border rounded-md relative h-fit">
       <div className="flex items-center justify-between gap-2 bg-[#F9FAFB] py-4 px-4 rounded-md">
         <div className="flex items-center gap-2">
           <div

@@ -13,6 +13,9 @@ export default function useAddExpenseData() {
       queryClient.invalidateQueries({
         queryKey: ["expenses"],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["overview"],
+      });
     },
     onError: () => {
       toast.error("Error saving data!");
