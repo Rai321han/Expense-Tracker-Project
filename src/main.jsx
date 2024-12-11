@@ -14,17 +14,17 @@ export const queryClient = new QueryClient();
 </Routes>;
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
-    <GoogleOAuthProvider
-      clientId={import.meta.env.VITE_GOOGLE_OAUTH_CLIENT_API_KEY}
-    >
-      <BrowserRouter>
-        <QueryClientProvider client={queryClient}>
-          <UserProvider>
-            <App />
-          </UserProvider>
-        </QueryClientProvider>
-      </BrowserRouter>
-    </GoogleOAuthProvider>
-  </StrictMode>
+  // <StrictMode>
+  <GoogleOAuthProvider
+    clientId={import.meta.env.VITE_GOOGLE_OAUTH_CLIENT_API_KEY}
+  >
+    <BrowserRouter>
+      <QueryClientProvider client={queryClient}>
+        <UserProvider>
+          <App />
+        </UserProvider>
+      </QueryClientProvider>
+    </BrowserRouter>
+  </GoogleOAuthProvider>
+  // </StrictMode>
 );
