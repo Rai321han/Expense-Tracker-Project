@@ -204,7 +204,7 @@ function App() {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mt-2">
               <History
-                isLoading={incomeQuery.isLoading}
+                isLoading={incomeQuery?.isLoading || false}
                 income
                 onFilterChange={(values) => {
                   setCategories({
@@ -224,7 +224,7 @@ function App() {
                 }}
               />
               <History
-                isLoading={expenseQuery.isLoading}
+                isLoading={expenseQuery?.isLoading || false}
                 expense
                 onFilterChange={(values) => {
                   setCategories({
