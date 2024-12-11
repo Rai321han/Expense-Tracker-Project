@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import calculateOverview from "../utils/calculateOverview";
 export default function Overview({ expense, income }) {
-  const { totalExpense, totalIncome, balance } = calculateOverview(
+  const [totalExpense, totalIncome, balance] = calculateOverview(
     expense,
     income
   );

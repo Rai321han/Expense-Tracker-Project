@@ -5,12 +5,17 @@ import { FilterSVG } from "../utils/SVGs";
 
 export default function FilterComp({ type, onFilterChange }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [categories, setCategories] = useState([]);
   const filterRef = useRef(null);
   const filterBtn = useRef(null);
 
   useEffect(() => {
     isOpen && filterRef.current.focus();
   }, [isOpen]);
+
+  useEffect(() => {
+    onFilterChange(categories);
+  }, [categories]);
 
   function handleToggle() {
     setIsOpen((prev) => !prev);
@@ -21,6 +26,13 @@ export default function FilterComp({ type, onFilterChange }) {
     if (!filterRef.current?.contains(event.relatedTarget)) {
       setIsOpen(false);
     }
+  }
+
+  function handleChange(value) {
+    const categorySet = new Set(categories);
+    if (categorySet.has(value)) categorySet.delete(value);
+    else categorySet.add(value);
+    setCategories(Array.from(categorySet));
   }
 
   let options;
@@ -40,7 +52,7 @@ export default function FilterComp({ type, onFilterChange }) {
         id="filter-option-1"
         value={option}
         onChange={(e) => {
-          onFilterChange(e.target.value, type);
+          handleChange(e.target.value);
         }}
       />
       <div className="ml-2">{option}</div>

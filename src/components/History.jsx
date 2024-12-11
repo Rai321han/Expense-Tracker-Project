@@ -1,41 +1,25 @@
 /* eslint-disable no-unused-vars */
 import { ExpenseSVG, IncomeSVG } from "../utils/SVGs";
-// import FilterComp from "./FilterComp";
+import FilterComp from "./FilterComp";
 import HistoryListItem from "./HistoryListItem";
 import SortComp from "./SortComp";
+import { CgSpinner } from "react-icons/cg";
 
 /* eslint-disable react/prop-types */
 export default function History({
+  isLoading,
   income,
   expense,
+  onFilterChange,
   data,
   onPopulateForm,
   onDelete,
   resetForm,
   onSort,
-  // filter,
-  // filters,
-  // onFilterChange,
 }) {
   let type;
   if (income) type = "Income";
   else if (expense) type = "Expense";
-
-  let updatedData = data;
-  // if (expense) {
-  //   updatedData = filterData(data, filters.expenseFilter);
-  // } else updatedData = filterData(data, filters.incomeFilter);
-
-  // function filterData(transData, filters) {
-  //   if (!filters.length) return transData;
-  //   let updatedData = [];
-  //   for (const data of transData) {
-  //     for (const filter of filters) {
-  //       if (data.category === filter) updatedData.push(data);
-  //     }
-  //   }
-  //   return updatedData;
-  // }
 
   return (
     <div className="border rounded-md relative">
@@ -61,21 +45,31 @@ export default function History({
           </div>
 
           <div className="relative inline-block text-left">
-            {/* <FilterComp type={type} onFilterChange={onFilterChange} /> */}
+            <FilterComp type={type} onFilterChange={onFilterChange} />
           </div>
         </div>
       </div>
 
       <div className="p-4 divide-y">
-        {updatedData.map((item) => (
-          <HistoryListItem
-            data={item}
-            key={item.id}
-            onPopulateForm={onPopulateForm}
-            resetForm={resetForm}
-            onDelete={onDelete}
-          />
-        ))}
+        {isLoading ? (
+          <div className="w-full">
+            <CgSpinner className="animate-spin w-8 h-8 mx-auto" />
+          </div>
+        ) : data?.length ? (
+          data.map((item) => (
+            <HistoryListItem
+              data={item}
+              key={item.id}
+              onPopulateForm={onPopulateForm}
+              resetForm={resetForm}
+              onDelete={onDelete}
+            />
+          ))
+        ) : (
+          <div className="text-center text-gray-500">
+            <i>No records.</i>
+          </div>
+        )}
       </div>
     </div>
   );

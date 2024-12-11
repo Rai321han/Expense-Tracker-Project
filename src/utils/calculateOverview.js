@@ -1,4 +1,5 @@
 export default function calculateOverview(expenses, incomes) {
+  if (!expenses || !incomes) return [0, 0, 0];
   const totalIncome = incomes.reduce(
     (acc, cur) => parseFloat(cur.amount) + acc,
     0
@@ -11,5 +12,5 @@ export default function calculateOverview(expenses, incomes) {
 
   const balance = totalIncome - totalExpense;
 
-  return { totalExpense, totalIncome, balance };
+  return [totalExpense, totalIncome, balance];
 }

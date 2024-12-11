@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import ExpenseForm from "./components/ExpenseForm";
 import History from "./components/History";
 import Overview from "./components/Overview";
-import { useQueries } from "react-query";
+import { useQueries, useQuery } from "react-query";
 import { getExpenses, getIncomes } from "./service/getData";
 import useAddExpenseData from "./hooks/useAddExpenseData";
 import useAddIncomeData from "./hooks/useAddIncomeData";
@@ -11,7 +11,21 @@ import toast, { Toaster } from "react-hot-toast";
 import useDelete from "./hooks/useDelete";
 import useUpdateData from "./hooks/useUpdateData";
 import { ImSpinner9 } from "react-icons/im";
+import GoogleSignIn from "./components/GoogleSignIn";
+import { useGoogleLogin, googleLogout as logout } from "@react-oauth/google";
+import getUserInfo from "./utils/getUserInfo";
+import NavBar from "./components/NavBar";
+import useUser from "./hooks/useUser";
+import { queryClient } from "./main";
+
+//
 function App() {
+  const [openDiaglog, setOpenDialog] = useState(false);
+  const [categories, setCategories] = useState({
+    expense: [],
+    income: [],
+  });
+  // const [user, setUser] = useState(null);
   const [incomeSort, setIncomeSort] = useState({
     sortType: "desc",
     sortField: "date",
@@ -28,24 +42,54 @@ function App() {
     date: "",
     type: "",
   });
+  const { user, setUser } = useUser();
   const { addExpenseData, isAddingExpense } = useAddExpenseData();
   const { addIncomeData, isAddingIncome } = useAddIncomeData();
   const { deleteRecord, isDeleting } = useDelete();
   const { updateRecord, isUpdating } = useUpdateData();
 
-  const data = useQueries([
-    {
-      queryKey: ["expenses", expenseSort],
-      queryFn: () => getExpenses(expenseSort.sortType, expenseSort.sortField),
-    },
-    {
-      queryKey: ["incomes", incomeSort],
-      queryFn: () => getIncomes(incomeSort.sortType, incomeSort.sortField),
-    },
-  ]);
+  const data = useQueries(
+    user
+      ? [
+          {
+            queryKey: ["expenses", expenseSort, user, categories],
+            queryFn: () =>
+              getExpenses(
+                expenseSort.sortType,
+                expenseSort.sortField,
+                user.email,
+                categories.expense
+              ),
+          },
+          {
+            queryKey: ["incomes", incomeSort, user, categories],
+            queryFn: () =>
+              getIncomes(
+                incomeSort.sortType,
+                incomeSort.sortField,
+                user.email,
+                categories.income
+              ),
+          },
+        ]
+      : []
+  );
 
-  const expenseQuery = data[0];
-  const incomeQuery = data[1];
+  const login = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      const userData = await getUserInfo(tokenResponse);
+      queryClient.invalidateQueries(["expenses"]);
+      queryClient.invalidateQueries(["incomes"]);
+      setUser(userData);
+      setOpenDialog(false);
+    },
+    onError: () => toast.error("Error while login!"),
+  });
+
+  const expenseQuery = user ? data[0] : null;
+  const incomeQuery = user ? data[1] : null;
+  const expenseData = user ? data[0].data : null;
+  const incomeData = user ? data[1].data : null;
   // On chaning form input
   function handleChange(e) {
     let { name, value } = e.target;
@@ -60,6 +104,11 @@ function App() {
 
   //adding new item
   function handleAddSubmit(data, type) {
+    if (!user) {
+      setOpenDialog(true);
+      return;
+    }
+
     if (data.amount === "") return;
 
     const categoryDefaultValue = type === "Expense" ? "Education" : "Salary";
@@ -68,7 +117,7 @@ function App() {
       amount: data.amount,
       category: data.category ? data.category : categoryDefaultValue,
       date: new Date(data.date),
-      email: "uddinraihan797@gmail.com",
+      email: user.email,
       type: type,
       id: crypto.randomUUID(),
     };
@@ -106,24 +155,22 @@ function App() {
       type: "",
     });
   }
-
-  const expenseData = data[0].data;
-  const incomeData = data[1].data;
-
-  if (expenseQuery.isLoading || incomeQuery.isLoading)
-    return (
-      <div className="w-screen h-screen flex justify-center items-center">
-        <ImSpinner9 className="animate-spin w-20 h-20 fill-teal-500 " />
-      </div>
-    );
-  if (expenseQuery.error || incomeQuery.error)
-    return (
-      <p>Error: {expenseQuery.error?.message || incomeQuery.error?.message}</p>
-    );
+  // if (expenseQuery && (expenseQuery.isLoading || incomeQuery.isLoading))
+  //   return (
+  //     <div className="w-screen h-screen flex justify-center items-center">
+  //       <ImSpinner9 className="animate-spin w-20 h-20 fill-teal-500 " />
+  //     </div>
+  //   );
+  // if (expenseQuery && (expenseQuery.error || incomeQuery.error))
+  //   return (
+  //     <p>Error: {expenseQuery.error?.message || incomeQuery.error?.message}</p>
+  //   );
 
   return (
     <>
       <Toaster />
+      <GoogleSignIn open={openDiaglog} setOpen={setOpenDialog} login={login} />
+      <NavBar />
       <main className="relative mx-auto my-10 w-full max-w-7xl">
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <div className="p-6 py-8 bg-[#F9FAFB] border rounded-md">
@@ -144,7 +191,14 @@ function App() {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-8">
               <History
+                isLoading={incomeQuery.isLoading}
                 income
+                onFilterChange={(values) => {
+                  setCategories({
+                    ...categories,
+                    income: values,
+                  });
+                }}
                 data={incomeData}
                 onPopulateForm={handlePopulateEditData}
                 resetForm={resetForm}
@@ -157,7 +211,14 @@ function App() {
                 }}
               />
               <History
+                isLoading={expenseQuery.isLoading}
                 expense
+                onFilterChange={(values) => {
+                  setCategories({
+                    ...categories,
+                    expense: values,
+                  });
+                }}
                 data={expenseData}
                 onPopulateForm={handlePopulateEditData}
                 resetForm={resetForm}

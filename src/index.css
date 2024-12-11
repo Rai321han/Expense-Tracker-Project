@@ -19,4 +19,7 @@
   .active {
     @apply bg-teal-500 hover:!bg-teal-600 text-white hover:!text-white font-semibold;
   }
+  :root {
+    --radius: 0.5rem;
+  }
 }

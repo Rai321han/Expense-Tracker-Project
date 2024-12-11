@@ -31,6 +31,7 @@ export default function ExpenseForm({
     <form
       onSubmit={(e) => {
         e.preventDefault();
+
         if (formData.id) onEdit(formData, updatedTab);
         else onAddSubmit(formData, tab);
       }}

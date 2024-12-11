@@ -9,14 +9,14 @@ export default function HistoryListItem({
   onDelete,
   resetForm,
 }) {
-  const [isEdit, setIsEdit] = useState(true);
+  const [isEdit, setIsEdit] = useState(false);
 
   const { category, date, amount, type, id } = data;
 
   return (
     <div
       className={`${
-        isEdit ? "text-gray-600" : "text-black"
+        !isEdit ? "text-gray-600" : "text-black"
       } flex justify-between items-center py-2 relative group cursor-pointer`}
     >
       <div>
@@ -28,7 +28,7 @@ export default function HistoryListItem({
       <div className="flex items-center gap-2">
         <p
           className={`${
-            isEdit ? "group-hover:-translate-x-14" : "-translate-x-14"
+            !isEdit ? "group-hover:-translate-x-14" : "-translate-x-14"
           } text-base font-semibold  transition-all `}
         >
           BDT {amount}
@@ -36,7 +36,7 @@ export default function HistoryListItem({
 
         <div
           className={`${
-            isEdit
+            !isEdit
               ? "translate-x-5 group-hover:translate-x-0 opacity-0 group-hover:opacity-100"
               : "trasnlate-x-0 opcaity-100"
           }  absolute right-0 top-1/2 -translate-y-1/2 transition-all flex flex-row gap-2`}
@@ -46,7 +46,7 @@ export default function HistoryListItem({
             role="button"
             title="Edit Button"
             onClick={() => {
-              if (isEdit) {
+              if (!isEdit) {
                 onPopulateForm({
                   ...data,
                   date: formatTimestampToString(date),
@@ -57,19 +57,20 @@ export default function HistoryListItem({
               setIsEdit((prev) => !prev);
             }}
           >
-            <EditSVG />
+            <EditSVG className={`${isEdit && "text-white"}`} />
             <div
               className={`absolute w-6 h-6  ${
-                !isEdit && "animate-pulse border-teal-900 border-2"
+                isEdit && "animate-pulse bg-teal-900"
               }  rounded-full -translate-y-1/2 -translate-x-1/2 top-1/2 left-1/2 -z-10 `}
             ></div>
           </button>
 
           <button
             onClick={() => onDelete(id, type)}
-            className="hover:text-red-600 "
+            className={`${isEdit ? "text-gray-400" : "hover:text-red-600"}`}
             role="button"
             title="Delete"
+            disabled={isEdit}
           >
             <DeleteSVG />
           </button>
