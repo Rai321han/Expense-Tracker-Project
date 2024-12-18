@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useState } from "react";
 import { expenseCategories, incomeCategories } from "../utils/data";
+import useMonthFirstAndLastDay from "@/hooks/useMonthFirstAndLastDay";
 
 export default function ExpenseForm({
   onChange,
@@ -11,6 +12,8 @@ export default function ExpenseForm({
   const [tab, setTab] = useState("Expense");
   let renderOptions = [];
   const updatedTab = formData.type || tab;
+  let { firstDay, lastDay } = useMonthFirstAndLastDay();
+  console.log(firstDay, lastDay);
 
   // console.log(formData);
 
@@ -108,6 +111,8 @@ export default function ExpenseForm({
           <input
             type="date"
             name="date"
+            min={firstDay}
+            max={lastDay}
             id="date"
             value={formData.date}
             required

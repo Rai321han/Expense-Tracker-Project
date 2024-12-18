@@ -4,6 +4,12 @@ import SignIn from "./SignIn";
 import useUser from "@/hooks/useUser";
 
 export default function NavBar() {
+  const today = new Date();
+  const formattedDate = today.toLocaleDateString("en-US", {
+    day: "2-digit",
+    month: "short", // "short" gives abbreviated month names like "Jan", "Feb", etc.
+    year: "numeric",
+  });
   const { user } = useUser();
   return (
     <nav>
@@ -20,7 +26,7 @@ export default function NavBar() {
         </div>
 
         <div className=" flex flex-row gap-2 justify-end">
-          <div className="p-2 text-zinc-500">December 2024</div>
+          {user && <div className="p-2 text-zinc-500">{formattedDate}</div>}
           {user ? <LogOut /> : <SignIn />}
           {user && (
             <div className="rounded-full  bg-teal-600 text-white w-10">
