@@ -26,7 +26,7 @@
 
 ## About The Project
 
-[![expense tracker][product-screenshot]](https://lws-m2-a2.vercel.app/)
+[![expense tracker][product-screenshot]](https://expense-tracker-raihan.vercel.app/)
 
 A web application for managing personal finances. Users can track expenses and income, view their balance, and perform CRUD operations. The app includes advanced features like sorting, filtering, pagination, and authentication for a seamless user experience.
 
